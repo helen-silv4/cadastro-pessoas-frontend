@@ -1,1 +1,225 @@
-<p>cadastro works!</p>
+<div class="container">
+
+  <mat-card class="card">
+
+    <mat-card-content>
+
+      <form [formGroup]="form" (ngSubmit)="enviar()" *ngIf="!pessoaCadastrada">
+
+        <div class="section-title">
+          Dados pessoais
+        </div>
+
+        <mat-form-field appearance="fill" class="field-full">
+          <mat-label>Nome completo</mat-label>
+          <input matInput formControlName="nome" placeholder="Ex: Maria Silva Santos" />
+
+          <mat-error *ngIf="form.get('nome')?.hasError('required')">
+            Nome é obrigatório
+          </mat-error>
+
+          <mat-error *ngIf="form.get('nome')?.hasError('pattern')">
+            Nome deve conter apenas letras, sem acentos, com pelo menos duas palavras
+          </mat-error>
+        </mat-form-field>
+
+        <div class="field-row">
+
+          <mat-form-field appearance="fill" class="field-half">
+            <mat-label>CPF</mat-label>
+
+            <input matInput formControlName="documento" placeholder="000.000.000-00" maxlength="14"
+              (input)="aplicarMascaraCpf($event)" />
+
+            <mat-error *ngIf="form.get('documento')?.hasError('required')">
+              CPF é obrigatório
+            </mat-error>
+
+            <mat-error *ngIf="form.get('documento')?.hasError('pattern')">
+              CPF inválido
+            </mat-error>
+
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field-half">
+            <mat-label>Data de nascimento</mat-label>
+
+            <input matInput type="date" formControlName="dataNascimento" [max]="hoje" />
+
+            <mat-error *ngIf="form.get('dataNascimento')?.hasError('required')">
+              Data de nascimento é obrigatória
+            </mat-error>
+
+          </mat-form-field>
+
+        </div>
+
+        <mat-form-field appearance="fill" class="field-full">
+          <mat-label>E-mail</mat-label>
+
+          <input matInput type="email" formControlName="email" placeholder="email@exemplo.com" />
+
+          <mat-error *ngIf="form.get('email')?.hasError('required')">
+            E-mail é obrigatório
+          </mat-error>
+
+          <mat-error *ngIf="form.get('email')?.hasError('email')">
+            E-mail inválido
+          </mat-error>
+
+        </mat-form-field>
+
+        <div class="section-title">
+          Endereço
+        </div>
+
+        <mat-form-field appearance="fill" class="field-cep">
+          <mat-label>CEP</mat-label>
+
+          <input matInput formControlName="cep" placeholder="00000-000" maxlength="9"
+            (input)="aplicarMascaraCep($event)" />
+
+          <mat-error *ngIf="form.get('cep')?.hasError('required')">
+            CEP é obrigatório
+          </mat-error>
+
+          <mat-error *ngIf="form.get('cep')?.hasError('pattern')">
+            CEP inválido
+          </mat-error>
+
+          <mat-error *ngIf="form.get('cep')?.hasError('cepInvalido')">
+            CEP não encontrado
+          </mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="field-full">
+          <mat-label>Logradouro</mat-label>
+          <input matInput formControlName="logradouro" />
+
+          <mat-error *ngIf="form.get('logradouro')?.hasError('required')">
+            Logradouro é obrigatório
+          </mat-error>
+
+        </mat-form-field>
+
+        <div class="field-row">
+
+          <mat-form-field appearance="fill" class="field-half">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="bairro" />
+
+            <mat-error *ngIf="form.get('bairro')?.hasError('required')">
+              Bairro é obrigatório
+            </mat-error>
+
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field-half">
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="cidade" />
+
+            <mat-error *ngIf="form.get('cidade')?.hasError('required')">
+              Cidade é obrigatória
+            </mat-error>
+
+          </mat-form-field>
+
+        </div>
+
+        <div class="field-row">
+
+          <mat-form-field appearance="fill" class="field-uf">
+            <mat-label>UF</mat-label>
+            <input matInput formControlName="uf" maxlength="2" />
+
+            <mat-error *ngIf="form.get('uf')?.hasError('required')">
+              UF é obrigatória
+            </mat-error>
+
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field-numero">
+            <mat-label>Número</mat-label>
+            <input matInput formControlName="numero" />
+
+            <mat-error *ngIf="form.get('numero')?.hasError('required')">
+              Número é obrigatório
+            </mat-error>
+
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field-complemento">
+            <mat-label>Complemento</mat-label>
+            <input matInput formControlName="complemento" />
+          </mat-form-field>
+
+        </div>
+
+        <div class="erro-geral" *ngIf="erroGeral">
+          {{ erroGeral }}
+        </div>
+
+        <div class="actions">
+          <button mat-flat-button type="submit" [disabled]="carregando" class="btn-primary">
+            <mat-spinner diameter="20" *ngIf="carregando"></mat-spinner>
+            <span *ngIf="!carregando">Cadastrar</span>
+          </button>
+        </div>
+
+      </form>
+
+      <div class="resultado" *ngIf="pessoaCadastrada">
+
+        <div class="resultado-icon">
+          ✓
+        </div>
+
+        <h2>Cadastro realizado com sucesso!</h2>
+
+        <div class="login-destaque">
+          <span class="login-label">LOGIN GERADO</span>
+          <span class="login-valor">{{ pessoaCadastrada.login }}</span>
+        </div>
+
+        <div class="dados-resumo">
+
+          <div class="dado">
+            <span>Nome</span>
+            <strong>{{ pessoaCadastrada.nome }}</strong>
+          </div>
+
+          <div class="dado">
+            <span>CPF</span>
+            <strong>{{ pessoaCadastrada.documento }}</strong>
+          </div>
+
+          <div class="dado">
+            <span>E-mail</span>
+            <strong>{{ pessoaCadastrada.email }}</strong>
+          </div>
+
+          <div class="dado">
+            <span>Data nascimento</span>
+            <strong>{{ pessoaCadastrada.dataNascimento }}</strong>
+          </div>
+
+          <div class="dado">
+            <span>Endereço</span>
+            <strong>
+              {{ pessoaCadastrada.logradouro }},
+              {{ pessoaCadastrada.numero }}
+              -
+              {{ pessoaCadastrada.cidade }}/{{ pessoaCadastrada.uf }}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    </mat-card-content>
+
+  </mat-card>
+
+</div>

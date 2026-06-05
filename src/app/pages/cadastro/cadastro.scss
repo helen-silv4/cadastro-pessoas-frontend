@@ -1,0 +1,169 @@
+:root {
+  --itau-laranja: #EC7000;
+  --itau-grafite: #1F2D3D;
+}
+
+.container {
+  min-height: 100vh;
+  background: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.card {
+  width: 100%;
+  max-width: 760px;
+  border-radius: 20px !important;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.08) !important;
+}
+
+.header {
+  margin-bottom: 32px;
+
+  h1 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 300;
+    color: #000;
+  }
+
+  p {
+    margin-top: 8px;
+    color: #666;
+    font-size: 15px;
+  }
+}
+
+.section-title {
+  margin: 32px 0 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--itau-laranja);
+}
+
+.field-full {
+  width: 100%;
+}
+
+.field-row {
+  display: flex;
+  gap: 24px;
+}
+
+.field-half {
+  flex: 1;
+}
+
+.field-cep {
+  width: 220px;
+}
+
+.field-uf {
+  width: 90px;
+}
+
+.field-numero {
+  width: 130px;
+}
+
+.field-complemento {
+  flex: 1;
+}
+
+mat-form-field {
+  margin-bottom: 12px;
+}
+
+.actions {
+  margin-top: 32px;
+}
+
+.btn-primary {
+  width: 100%;
+  height: 56px;
+  border-radius: 14px !important;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.erro-geral {
+  margin-top: 16px;
+  color: #d32f2f;
+}
+
+.resultado {
+  text-align: center;
+  padding: 32px 0;
+}
+
+.resultado-icon {
+  width: 70px;
+  height: 70px;
+  background: var(--itau-laranja);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  margin: auto;
+}
+
+.login-destaque {
+  border: 2px solid var(--itau-laranja);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.login-label {
+  display: block;
+  color: #666;
+  font-size: 12px;
+}
+
+.login-valor {
+  display: block;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--itau-laranja);
+  margin-top: 8px;
+}
+
+.dados-resumo {
+  text-align: left;
+  margin-top: 24px;
+}
+
+.dado {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.btn-novo {
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+
+  .field-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .field-half,
+  .field-cep,
+  .field-uf,
+  .field-numero,
+  .field-complemento {
+    width: 100%;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+}

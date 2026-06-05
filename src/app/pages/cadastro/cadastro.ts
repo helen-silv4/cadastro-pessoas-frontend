@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,6 +8,41 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { PessoaService } from '../../services/pessoa';
 import { PessoaResponse } from '../../models/pessoa.model';
+
+function validarDataNascimento(control: AbstractControl): ValidationErrors | null {
+  const valor = control.value;
+  if (!valor) return null;
+
+  const data = new Date(valor);
+  const hoje = new Date();
+  const minima = new Date();
+  minima.setFullYear(hoje.getFullYear() - 120);
+
+  if (data > hoje) return { dataFutura: true };
+  if (data < minima) return { dataAntiga: true };
+
+  return null;
+}
+
+function validarCpf(control: AbstractControl): ValidationErrors | null {
+  const cpf = control.value?.replace(/\D/g, '');
+  if (!cpf || cpf.length !== 11) return null;
+  if (cpf.split('').every((d: string) => d === cpf[0])) return { cpfInvalido: true };
+
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(cpf[i]) * (10 - i);
+  let first = 11 - (sum % 11);
+  if (first >= 10) first = 0;
+  if (first !== parseInt(cpf[9])) return { cpfInvalido: true };
+
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(cpf[i]) * (11 - i);
+  let second = 11 - (sum % 11);
+  if (second >= 10) second = 0;
+  if (second !== parseInt(cpf[10])) return { cpfInvalido: true };
+
+  return null;
+}
 
 @Component({
   selector: 'app-cadastro',
@@ -31,7 +66,11 @@ export class Cadastro {
   erroGeral: string | null = null;
   hoje = new Date().toISOString().split('T')[0];
 
-  constructor(private fb: FormBuilder, private pessoaService: PessoaService) {
+  constructor(
+    private fb: FormBuilder,
+    private pessoaService: PessoaService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.form = this.fb.group({
       nome: ['', [
         Validators.required,
@@ -39,10 +78,11 @@ export class Cadastro {
       ]],
       documento: ['', [
         Validators.required,
-        Validators.pattern('^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$')
+        Validators.pattern('^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$'),
+        validarCpf
       ]],
       email: ['', [Validators.required, Validators.email]],
-      dataNascimento: ['', Validators.required],
+      dataNascimento: ['', [Validators.required, validarDataNascimento]],
       cep: ['', [
         Validators.required,
         Validators.pattern('^\\d{5}-\\d{3}$')
@@ -54,6 +94,12 @@ export class Cadastro {
       numero: ['', Validators.required],
       complemento: ['']
     });
+  }
+
+  onNomeInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const valor = input.value.replace(/[^a-zA-Z ]/g, '');
+    this.form.get('nome')?.setValue(valor, { emitEvent: false });
   }
 
   buscarCep(): void {
@@ -112,6 +158,7 @@ export class Cadastro {
       next: (response) => {
         this.pessoaCadastrada = response;
         this.carregando = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.carregando = false;
@@ -120,6 +167,7 @@ export class Cadastro {
         } else {
           this.erroGeral = 'Erro inesperado. Tente novamente.';
         }
+        this.cdr.detectChanges();
       }
     });
   }
@@ -128,5 +176,6 @@ export class Cadastro {
     this.pessoaCadastrada = null;
     this.erroGeral = null;
     this.form.reset();
+    this.cdr.detectChanges();
   }
 }

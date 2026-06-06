@@ -15,18 +15,18 @@ Interface web para cadastro de pessoas com geração automática de login, desen
 | Angular | 19+ |
 | Angular Material | 21+ |
 | TypeScript | 5+ |
-| SCSS | — |
-| Docker + Nginx | — |
-| GitHub Actions | — |
+| SCSS | - |
+| Docker + Nginx | - |
+| GitHub Actions | - |
  
 <br>
 
 ## 📋 Pré-requisitos
- 
-- Node.js 20+
-- npm
-- Angular CLI (`npm install -g @angular/cli`)
-- Docker e Docker Compose (para execução via container)
+
+- [Node.js 24.0.0](https://nodejs.org/)
+- [npm 11.3.0](https://www.npmjs.com/)
+- [Angular CLI 21.2.13](https://angular.dev/tools/cli) (`npm install -g @angular/cli`)
+- [Docker Desktop 29.5.2](https://www.docker.com/products/docker-desktop/) (para execução via container)
 
 <br>
 
